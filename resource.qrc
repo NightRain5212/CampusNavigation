@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>assets/map.png</file>
+    </qresource>
+    <qresource prefix="/style">
+        <file>stylesheets.qss</file>
+    </qresource>
+</RCC>
