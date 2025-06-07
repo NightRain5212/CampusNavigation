@@ -68,9 +68,9 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(1200, 800);
-        MainWindow->setMinimumSize(QSize(1200, 800));
-        MainWindow->setMaximumSize(QSize(1200, 800));
+        MainWindow->resize(800, 600);
+        MainWindow->setMinimumSize(QSize(800, 600));
+        MainWindow->setMaximumSize(QSize(800, 600));
         addPlace = new QAction(MainWindow);
         addPlace->setObjectName("addPlace");
         addEdge = new QAction(MainWindow);
@@ -121,19 +121,19 @@ public:
         centralwidget->setObjectName("centralwidget");
         mapLabel = new QLabel(centralwidget);
         mapLabel->setObjectName("mapLabel");
-        mapLabel->setGeometry(QRect(20, 60, 401, 701));
+        mapLabel->setGeometry(QRect(30, 70, 291, 441));
         titleLabel = new QLabel(centralwidget);
         titleLabel->setObjectName("titleLabel");
-        titleLabel->setGeometry(QRect(0, 10, 1200, 32));
-        titleLabel->setMinimumSize(QSize(1200, 32));
-        titleLabel->setMaximumSize(QSize(1200, 32));
+        titleLabel->setGeometry(QRect(10, 10, 800, 32));
+        titleLabel->setMinimumSize(QSize(800, 32));
+        titleLabel->setMaximumSize(QSize(800, 32));
         titleLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
         Log = new QPlainTextEdit(centralwidget);
         Log->setObjectName("Log");
-        Log->setGeometry(QRect(440, 180, 721, 441));
+        Log->setGeometry(QRect(360, 80, 371, 431));
         countlabel = new QLabel(centralwidget);
         countlabel->setObjectName("countlabel");
-        countlabel->setGeometry(QRect(690, 100, 241, 51));
+        countlabel->setGeometry(QRect(440, 50, 201, 31));
         QFont font;
         font.setPointSize(15);
         font.setBold(true);
@@ -142,7 +142,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 1200, 17));
+        menubar->setGeometry(QRect(0, 0, 800, 17));
         add = new QMenu(menubar);
         add->setObjectName("add");
         update = new QMenu(menubar);
