@@ -40,7 +40,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         searchedgedialog.h searchedgedialog.cpp searchedgedialog.ui
         shortestpathdialog.h shortestpathdialog.cpp shortestpathdialog.ui
         searchbytimedialog.h searchbytimedialog.cpp searchbytimedialog.ui
-        graphprocessor.h graphprocessor.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET aaa APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

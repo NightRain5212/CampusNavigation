@@ -137,6 +137,7 @@
     </property>
     <addaction name="openPlaceFile"/>
     <addaction name="openEdgeFile"/>
+    <addaction name="savefile"/>
    </widget>
    <widget class="QMenu" name="menuchaxun">
     <property name="title">
@@ -194,12 +195,12 @@
   </action>
   <action name="updatePlace">
    <property name="text">
-    <string>地点</string>
+    <string>特定地点推荐游玩时间</string>
    </property>
   </action>
   <action name="updateEdge">
    <property name="text">
-    <string>路径</string>
+    <string>特定路径权重</string>
    </property>
   </action>
   <action name="delPlace">
@@ -214,7 +215,7 @@
   </action>
   <action name="searchForEdge">
    <property name="text">
-    <string>路径</string>
+    <string>某个地点连接的所有路径</string>
    </property>
   </action>
   <action name="searchForPlaceByName">
@@ -259,7 +260,7 @@
   </action>
   <action name="clearLog">
    <property name="text">
-    <string>清空日志信息</string>
+    <string>清空显示中的日志信息</string>
    </property>
   </action>
   <action name="isConnected">
@@ -290,6 +291,11 @@
   <action name="findMST">
    <property name="text">
     <string>求最小生成树</string>
+   </property>
+  </action>
+  <action name="savefile">
+   <property name="text">
+    <string>保存图信息</string>
    </property>
   </action>
  </widget>

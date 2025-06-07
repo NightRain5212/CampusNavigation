@@ -2,9 +2,7 @@
 #define MAINWINDOW_H
 
 #include "graph.h"
-#include "graphprocessor.h"
 #include <QMainWindow>
-#include <QThread>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -74,13 +72,10 @@ private slots:
 
     void on_findMST_triggered();
 
-    void handleProcessFinished(bool success,const QString& msg);
-
+    void on_savefile_triggered();
 
 private:
     Ui::MainWindow *ui;
     Graph *graph;
-    QThread *fileLoadThread;
-    graphProcessor *processor;
 };
 #endif // MAINWINDOW_H

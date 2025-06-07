@@ -90,6 +90,8 @@ public:
     void printEulerPath();
     void findShortestPath(const QString& placeName1, const QString& placeName2);
     void printMST();
+    void saveFile(const QString& filepath);
+
 
 signals:
     void newLog(const QString& message,const QString& level);

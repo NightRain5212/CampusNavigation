@@ -23,13 +23,11 @@
 #include "searchedgedialog.h"
 #include "shortestpathdialog.h"
 #include "searchbytimedialog.h"
-#include "graphprocessor.h"
 #include "graph.h"
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , fileLoadThread(nullptr)
-    , processor(nullptr)
+
 {
     ui->setupUi(this);
     // 设置地图图片
@@ -60,12 +58,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    if(fileLoadThread) {
-        if(fileLoadThread->isRunning()) {
-            fileLoadThread->quit();
-            fileLoadThread->wait(2000);
-        }
-    }
     delete ui;
 }
 
@@ -290,49 +282,8 @@ void MainWindow::on_openEdgeFile_triggered()
     }
     qDebug() << "选择的文件路径:" << filePath;
     qDebug() << "选择的过滤器:" << selectedFilter;
-    // 检查是否有正在运行的加载任务
-    if (fileLoadThread && fileLoadThread->isRunning()) { // 使用成员变量名
-        QMessageBox::warning(this, "处理中", "当前文件正在处理，请稍后再试。");
-        emit newLog("当前文件正在处理，请稍后再试。","ERROR");
-        return;
-    }
-
-    // 清除旧线程旧对象
-    if(processor) processor->deleteLater(); // 安全删除
-    if(fileLoadThread) fileLoadThread->deleteLater();
-    processor = nullptr;
-    fileLoadThread = nullptr;
-
-    fileLoadThread = new QThread(this); // 新线程
-    processor = new graphProcessor(graph); // 新对象，传入graph指针
-    processor->moveToThread(fileLoadThread); // 移入新线程
-
-    // 线程开始就读取文件
-    connect(fileLoadThread, &QThread::started,processor,[this,processor = processor,filePath](){
-        processor->readEdgeFile(filePath);
-    });
-    // 完成后通知主线程
-    connect(processor, &graphProcessor::processingFinished, this, &MainWindow::handleProcessFinished);
-    // 完成后进程退出工作循环
-    connect(processor, &graphProcessor::processingFinished, fileLoadThread,&QThread::quit);
-    // 线程结束后清理对象
-    connect(fileLoadThread, &QThread::finished,this,[this](){
-        qDebug() << "道路文件加载线程已结束。";
-        if (processor) { // processor 可能先于 thread 被 deleteLater
-            processor->deleteLater();
-        }
-        if (fileLoadThread) {
-            sender()->deleteLater();
-        }
-        this->fileLoadThread = nullptr;
-        this->processor = nullptr;
-        this->showCounts();
-    });
-
-    //开始进程
-    ui->statusbar->showMessage(QString("正在加载文件 '%1'...").arg(QFileInfo(filePath).fileName()));
-
-    fileLoadThread->start();
+    graph->readEdgeFile(filePath);
+    showCounts();
 
 }
 
@@ -433,16 +384,27 @@ void MainWindow::on_findMST_triggered()
     graph->printMST();
 }
 
-void MainWindow::handleProcessFinished(bool success, const QString &msg)
+void MainWindow::on_savefile_triggered()
 {
-    qDebug() << "MainWindow::handleProcessingFinished 在主线程中执行: " << QThread::currentThreadId();
-    if(success) {
-        QMessageBox::information(this,"完成",msg);
-        statusMsg("文件加载完成！");
-        emit newLog("文件加载完成！","INFO");
-    } else {
-        QMessageBox::critical(this,"失败",msg);
-        statusMsg("文件加载失败！");
-        emit newLog("文件加载失败！","INFO");
+    QString defaultpath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString defaultName = QDir(defaultpath).filePath("untitled");
+
+
+    QString filter = tr("文本文件(*.txt);;CSV文件(*.csv);;所有文件(*.*)");
+
+    QString filePath = QFileDialog::getSaveFileName(
+        this,
+        tr("保存文件"),
+        defaultName,
+        filter
+    );
+    if (filePath.isEmpty()) {
+        qDebug() << "用户取消了保存操作。";
+        statusMsg("保存操作已取消。"); // 在状态栏给出提示
+        return; // 提前退出函数
     }
+    qDebug() << "请求将图数据保存到基本路径：" << filePath;
+    graph->saveFile(filePath);
+    statusMsg("保存操作已完成。");
 }
+

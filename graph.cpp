@@ -7,8 +7,10 @@
 #include <QStringList>
 #include <QByteArray>
 #include <QList>
+#include <QDir>
 #include <QStringView>
 #include <qelapsedtimer.h>
+#include <qfileinfo.h>
 #include <set>
 #include <stack>
 #include <queue>
@@ -663,7 +665,7 @@ void Graph::findShortestPath(const QString &startName, const QString &endName)
 
     int startId = placeNameToIdMap[startName];
     int endId = placeNameToIdMap[endName];
-
+    int time = 0;
     if (startId == endId) {
         QString msg = QString("路径查找：起始地点和目标地点相同 ('%1')。\n路径长度：0。\n路径：%1\n")
                           .arg(startName);
@@ -711,6 +713,7 @@ void Graph::findShortestPath(const QString &startName, const QString &endName)
         std::vector<QString> pathVec;
         int pNode = endId;
         while (pNode != -1) {
+            time+=places[pNode].recommendedTime;
             pathVec.push_back(places[pNode].name);
             pNode = pre[pNode];
         }
@@ -737,11 +740,12 @@ void Graph::findShortestPath(const QString &startName, const QString &endName)
             }
         }
 
-        QString msg = QString("从 '%1' 到 '%2' 的最短路径：\n总长度：%3 米\n路径：%4\n")
+        QString msg = QString("从 '%1' 到 '%2' 的最短路径：\n总长度：%3 米\n路径：%4\n推荐游玩时间：%5\n")
                           .arg(startName)
                           .arg(endName)
                           .arg(dist[endId])
-                          .arg(pathText);
+                          .arg(pathText)
+                          .arg(time);
         emit newLog(msg, "INFO");
         qDebug().noquote() << msg;
     }
@@ -785,6 +789,77 @@ void Graph::printMST()
     msg+= QString("最小生成树总最小代价为：%1").arg(totalLength);
     emit newLog(msg,"INFO");
     return;
+}
+
+void Graph::saveFile(const QString &filepath)
+{
+    if (placeCount == 0 && edgeCount == 0) {
+        emit newLog("图中没有数据，无需保存。", "INFO");
+        qDebug() << "图中没有数据，保存操作已取消。";
+        return;
+    }
+
+    QFileInfo fileInfo(filepath);
+    QString dirPath = fileInfo.path();
+    QString baseName = fileInfo.baseName();
+
+    QString placesPath = QDir(dirPath).filePath(baseName+"_nodes.csv");
+    QString edgesPath = QDir(dirPath).filePath(baseName+"_edges.csv");
+
+    bool placesSuccess = false;
+    bool edgesSuccess = false;
+
+    QFile placesFile(placesPath);
+    if(!placesFile.open(QIODevice::WriteOnly|QIODevice::Text)) {
+        QString errorMsg = QString("错误：无法创建或打开地点文件进行写入：\n%1\n原因: %2")
+                               .arg(placesPath, placesFile.errorString());
+        emit newLog(errorMsg, "ERROR");
+        qDebug() << errorMsg;
+    } else {
+        QTextStream stream(&placesFile);
+        stream.setEncoding(QStringConverter::Utf8);
+        stream<<"name"<<","<<"type"<<","<<"recommendedTime"<<'\n';
+        for(auto& place:places) {
+            if(!place.isValid) continue;
+            stream<<place.name<<","<<place.type<<","<<place.recommendedTime<<'\n';
+        }
+        placesFile.close();
+        QString successMsg = QString("所有地点信息已成功保存到：\n%1").arg(placesPath);
+        emit newLog(successMsg, "INFO");
+        qDebug() << successMsg;
+        placesSuccess = true;
+    }
+    QFile edgesFile(edgesPath);
+    if(!edgesFile.open(QIODevice::WriteOnly|QIODevice::Text)) {
+        QString errorMsg = QString("错误：无法创建或打开地点文件进行写入：\n%1\n原因: %2")
+                               .arg(edgesPath, edgesFile.errorString());
+        emit newLog(errorMsg, "ERROR");
+        qDebug() << errorMsg;
+    } else {
+        QTextStream stream(&edgesFile);
+        stream.setEncoding(QStringConverter::Utf8);
+        stream<<"node"<<","<<"node"<<","<<"weight"<<'\n';
+
+        for(auto& edge:edges) {
+            if (edge.id1 < places.size() && places[edge.id1].isValid &&
+                edge.id2 < places.size() && places[edge.id2].isValid)
+            {
+                stream << places[edge.id1].name << ","
+                            << places[edge.id2].name << ","
+                            << edge.length << "\n";
+            }
+        }
+        edgesFile.close();
+        QString successMsg = QString("所有道路信息已成功保存到：\n%1").arg(edgesPath);
+        emit newLog(successMsg, "INFO");
+        qDebug() << successMsg;
+        edgesSuccess = true;
+    }
+    if (placesSuccess && edgesSuccess) {
+        emit newLog("图数据已全部分别保存到地点和道路文件中。", "INFO");
+    } else {
+        emit newLog("图数据保存过程中出现错误，请检查日志详情。", "WARNING");
+    }
 }
 
 bool Graph::updatePlaceRecommenedTime(const QString &placeName, int newTime)
@@ -927,6 +1002,10 @@ bool Graph::readPlaceFile(const QString &filePath)
     }
     // 创建输入流
     QTextStream inStream(&csvFile);
+    // 在循环开始前，先读取并丢弃第一行（表头）
+    if (!inStream.atEnd()) {
+        inStream.readLine();
+    }
     qDebug() << "开始读取并解析 CSV 文件：" << filePath;
     int lineNumber = 0;
     while(!inStream.atEnd())
@@ -947,23 +1026,6 @@ bool Graph::readPlaceFile(const QString &filePath)
     return 1;
 }
 
-QList<QStringView> handleOneLine(const QByteArray& bytes) {
-    QList<QStringView> felder;
-    QByteArray::const_iterator start = bytes.constBegin();
-    QByteArray::const_iterator end = bytes.constEnd();
-    QByteArray::const_iterator astart = start;
-    for(QByteArray::const_iterator it=start;it!=end;++it) {
-        if(*it == ',') {
-            felder.append(QStringView(reinterpret_cast<const QChar*>(astart),it-astart));
-            astart = it + 1;
-        }
-    }
-    // 最后一个字段
-    felder.append(QStringView(reinterpret_cast<const QChar*>(astart),end-astart));
-    return felder;
-}
-
-
 bool Graph::readEdgeFile(const QString &filePath)
 {
     QElapsedTimer timer;
@@ -977,6 +1039,10 @@ bool Graph::readEdgeFile(const QString &filePath)
     }
     // 创建输入流
     QTextStream inStream(&csvFile);
+    // 在循环开始前，先读取并丢弃第一行（表头）
+    if (!inStream.atEnd()) {
+        inStream.readLine();
+    }
     qDebug() << "开始读取并解析 CSV 文件：" << filePath;
     int lineNumber = 0;
     QString line;
