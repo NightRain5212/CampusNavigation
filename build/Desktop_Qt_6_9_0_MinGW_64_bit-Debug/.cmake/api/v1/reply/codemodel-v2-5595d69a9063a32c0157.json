@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-01d3bdd0fb9afdf9805d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "CampusNavigation",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "CampusNavigation::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-CampusNavigation-Debug-811b322671d0f30660c6.json",
+					"name" : "CampusNavigation",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "CampusNavigation_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-CampusNavigation_autogen-Debug-f819852536faee8cee06.json",
+					"name" : "CampusNavigation_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "CampusNavigation_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-CampusNavigation_autogen_timestamp_deps-Debug-681ba9f9f531a89832d8.json",
+					"name" : "CampusNavigation_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Debug",
+		"source" : "D:/test/qt/CampusNavigation"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

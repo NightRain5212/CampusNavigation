@@ -239,7 +239,7 @@ void MainWindow::on_updateEdge_triggered()
 
 void MainWindow::on_openPlaceFile_triggered()
 {
-    QString documentsPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString documentsPath = QCoreApplication::applicationDirPath();
     QString filter = tr("CSV文件 (*.csv);;文本文件 (*.txt);;C++ 文件 (*.cpp *.h);;所有文件 (*.*)");
     QString selectedFilter; // 用来接收用户选择的过滤器
 
@@ -265,7 +265,7 @@ void MainWindow::on_openPlaceFile_triggered()
 
 void MainWindow::on_openEdgeFile_triggered()
 {
-    QString documentsPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString documentsPath = QCoreApplication::applicationDirPath();
     QString filter = tr("CSV文件 (*.csv);;文本文件 (*.txt);;C++ 文件 (*.cpp *.h);;所有文件 (*.*)");
     QString selectedFilter; // 用来接收用户选择的过滤器
 
@@ -279,6 +279,7 @@ void MainWindow::on_openEdgeFile_triggered()
 
     if (filePath.isEmpty()) {
         qDebug() << "未选择任何文件。";
+        return;
     }
     qDebug() << "选择的文件路径:" << filePath;
     qDebug() << "选择的过滤器:" << selectedFilter;
@@ -386,11 +387,11 @@ void MainWindow::on_findMST_triggered()
 
 void MainWindow::on_savefile_triggered()
 {
-    QString defaultpath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString defaultpath = QCoreApplication::applicationDirPath();
     QString defaultName = QDir(defaultpath).filePath("untitled");
 
 
-    QString filter = tr("文本文件(*.txt);;CSV文件(*.csv);;所有文件(*.*)");
+    QString filter = tr("CSV文件(*.csv);;文本文件(*.txt);;所有文件(*.*)");
 
     QString filePath = QFileDialog::getSaveFileName(
         this,

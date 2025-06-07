@@ -6,7 +6,7 @@
 # It is included in the main 'build.ninja'.
 
 # =============================================================================
-# Project: aaa
+# Project: CampusNavigation
 # Configurations: Debug
 # =============================================================================
 # =============================================================================
@@ -14,7 +14,7 @@
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__aaa_unscanned_Debug
+rule CXX_COMPILER__CampusNavigation_unscanned_Debug
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\qt\Tools\mingw1310_64\bin\g++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -24,7 +24,7 @@ rule CXX_COMPILER__aaa_unscanned_Debug
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__aaa_Debug
+rule CXX_EXECUTABLE_LINKER__CampusNavigation_Debug
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\qt\Tools\mingw1310_64\bin\g++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -42,7 +42,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = D:\qt\Tools\CMake_64\bin\cmake.exe --regenerate-during-build -SD:\test\qt\aaa -BD:\test\qt\aaa\build\Desktop_Qt_6_9_0_MinGW_64_bit-Debug
+  command = D:\qt\Tools\CMake_64\bin\cmake.exe --regenerate-during-build -SD:\test\qt\CampusNavigation -BD:\test\qt\CampusNavigation\build\Desktop_Qt_6_9_0_MinGW_64_bit-Debug
   description = Re-running CMake...
   generator = 1
 

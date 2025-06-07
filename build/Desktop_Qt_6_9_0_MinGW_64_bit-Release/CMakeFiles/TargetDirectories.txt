@@ -1,0 +1,9 @@
+D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/CMakeFiles/CampusNavigation.dir
+D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/CMakeFiles/edit_cache.dir
+D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/CMakeFiles/rebuild_cache.dir
+D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/CMakeFiles/list_install_components.dir
+D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/CMakeFiles/install.dir
+D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/CMakeFiles/install/local.dir
+D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/CMakeFiles/install/strip.dir
+D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/CMakeFiles/CampusNavigation_autogen_timestamp_deps.dir
+D:/test/qt/CampusNavigation/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/CMakeFiles/CampusNavigation_autogen.dir

@@ -41,7 +41,7 @@ void Graph::addPlace(const QString &name, int recommendedTime, QString type,bool
 
     // 扩展邻接表以容纳新地点
     if (currentId >= adjacencyList.size()) {
-        adjacencyList.resize(currentId * 2);
+        adjacencyList.resize(currentId + 1);
     }
 
     if(withLog){
@@ -151,7 +151,9 @@ bool Graph::removePlace(const QString &name)
     //  从名称到ID的映射中移除
     placeNameToIdMap.erase(name);
     //  清除该地点的所有出边
-    adjacencyList[id_to_remove].clear();
+    if(!adjacencyList[id_to_remove].empty()){
+        adjacencyList[id_to_remove].clear();
+    }
     qDebug() << "清除了地点 ID:" << id_to_remove << " 的所有出边。";
 
     for (int i = 0; i < static_cast<int>(adjacencyList.size()); ++i) {
@@ -179,13 +181,15 @@ bool Graph::removePlace(const QString &name)
     }
     //  从全局 edges 列表中移除与该地点相关的边
     auto original_global_edge_count = edges.size();
-    edges.erase(
-        std::remove_if(edges.begin(), edges.end(),
-                       [id_to_remove](const EdgeInfo& edge_info) {
-                           return edge_info.id1 == id_to_remove || edge_info.id2 == id_to_remove;
-                       }),
-        edges.end()
-        );
+    if(!edges.empty()) {
+        edges.erase(
+            std::remove_if(edges.begin(), edges.end(),
+                           [id_to_remove](const EdgeInfo& edge_info) {
+                               return edge_info.id1 == id_to_remove || edge_info.id2 == id_to_remove;
+                           }),
+            edges.end()
+            );
+    }
     if (edges.size() < original_global_edge_count) {
         qDebug() << "从全局边信息列表 (edges) 中移除了与 ID:" << id_to_remove << " 相关的边。";
     }
@@ -517,7 +521,7 @@ void Graph::calcDegree()
         if(static_cast<size_t>(i)<places.size() && places[i].isValid) {
             int d = 0;
             for(auto& e:adjacencyList[i]) {
-                if (e.toNodeId > 0 && places[e.toNodeId].isValid) {
+                if (e.toNodeId >= 0 && places[e.toNodeId].isValid) {
                     d++;
                 }
             }
@@ -538,13 +542,8 @@ int Graph::hasEulerPath()
     }
     calcDegree();
     std::vector<int> nodes; // 存储度数为奇数的节点;
-    bool ans = true;
     for(auto& p:degreeMap) {
         if(p.second&1) {
-            if(nodes.size()>2) {
-                ans = false;
-                break;
-            }
             nodes.push_back(p.first);
         }
     }
@@ -560,14 +559,16 @@ int Graph::hasEulerPath()
         QString msg = "存在欧拉回路！\n";
         emit newLog(msg,"INFO");
         return s;
-    }
-    if(ans) {
-        QString msg = "存在欧拉路径！\n";
-        emit newLog(msg,"INFO");
-        return nodes[0];
+    } else if (nodes.size() == 2) {
+        // 奇数度节点为2个 --> 存在欧拉路径
+        emit newLog("图中存在欧拉路径（起点和终点不同）。", "INFO");
+        return nodes[0]; // 返回其中一个奇数度节点作为起点
+
     } else {
-        QString msg = "不存在欧拉路径!\n";
-        emit newLog(msg,"INFO");
+        // 其他情况 --> 不存在欧拉路径或回路
+        QString msg = QString("图中不存在欧拉路径或回路，因为存在 %1 个奇数度的顶点。")
+                          .arg(nodes.size());
+        emit newLog(msg, "ERROR");
         return -1;
     }
 
