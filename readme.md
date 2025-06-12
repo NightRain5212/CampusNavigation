@@ -96,8 +96,6 @@ CampusNavigation/
 ├── mainwindow.cpp              # 主窗口实现
 ├── graph.h                     # 图数据结构头文件
 ├── graph.cpp                   # 图数据结构实现
-├── graphprocessor.h            # 图处理逻辑头文件
-├── graphprocessor.cpp          # 图处理逻辑实现
 ├── addedgedialog.h/cpp         # 添加路径对话框
 ├── addplacedialog.h/cpp        # 添加地点对话框
 ├── deledgedialog.h/cpp         # 删除路径对话框
