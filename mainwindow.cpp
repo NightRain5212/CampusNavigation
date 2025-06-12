@@ -102,7 +102,7 @@ void MainWindow::addLogMessage(const QString &message, const QString &level)
 {
     // 获取当前exe所在的目录
     QString exeDir = QCoreApplication::applicationDirPath();
-    QString logPath = exeDir + QDir::separator() + "log.txt";
+    QString logPath = exeDir + "/" + "log.txt";
     QFile logFile(logPath);
     // 获取时间
     QString timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
@@ -120,7 +120,7 @@ void MainWindow::addLogMessage(const QString &message, const QString &level)
         stream.setEncoding(QStringConverter::Utf8);
         stream << log << Qt::endl;
         logFile.close();
-         qDebug() << "内容已成功追加到文件:" << logPath;
+        qDebug() << "内容已成功追加到文件:" << logPath;
     } else {
         qDebug() << "错误：无法打开文件进行追加:" << logPath
                  << "错误信息:" << logFile.errorString();
