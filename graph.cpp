@@ -720,7 +720,7 @@ void Graph::findShortestPath(const QString &startName, const QString &endName)
         }
 
         // 检查路径重建是否成功
-        bool pathReconstructionError = pathVec.empty() || (pathVec.size() == 1 && pathVec.front().startsWith("[错误"));
+        bool pathReconstructionError = pathVec.empty() || pathVec.size() == 1;
         if (pathReconstructionError && startId != endId) { // 如果起点终点不同但路径重建失败
             QString msg = QString("错误：无法重建从 '%1' 到 '%2' 的有效路径，尽管计算出距离为 %3。\n")
                               .arg(startName).arg(endName).arg(dist[endId]);
